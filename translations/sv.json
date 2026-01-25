@@ -1,0 +1,66 @@
+{
+  "title": "Pireva",
+  "config": {
+    "abort": {
+      "already_configured": "Den angivna adressen finns redan konfigurerad"
+    },
+    "step": {
+      "user": {
+          "data": {
+            "address": "Adress (t.ex. vag-nr)"
+          },
+        "title": "Pireva Tömningsschema"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "maildaysleft": {
+        "name": "Sopor hämtning",
+        "state": {
+          "0": "Idag",
+          "1": "I morgon",
+          "2": "I övermorgon",
+          "3": "Om tre dagar",
+          "4": "Om fyra dagar",
+          "5": "Om fem dagar",
+          "6": "Om sex dagar",
+          "7": "Om en vecka",
+          "8": "Om 8 dagar",
+          "9": "Om 9 dagar",
+          "10": "Om 10 dagar",
+          "11": "Om 11 dagar",
+          "12": "Om 12 dagar",
+          "13": "Om 13 dagar",
+          "14": "Om två veckor"
+        },
+        "state_attributes": {
+          "last_update": {
+            "name": "Senast uppdaterad"
+          },
+          "days_left": {
+            "name": "Dagar kvar"
+          },
+          "address": {
+            "name": "Adress"
+          },
+          "url": {
+            "name": "Webbadress"
+          },
+          "next_day": {
+            "name": "Nästa datum"
+          },
+          "next_typ": {
+            "name": "Typ av sopor"
+          },
+          "schedule": {
+            "name": "Helt schema"
+          },
+          "information": {
+            "name": "Information"
+          }
+        }
+      }
+    }
+  }
+}

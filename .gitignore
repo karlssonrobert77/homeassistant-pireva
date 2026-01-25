@@ -1,0 +1,17 @@
+# Python virtual environments
+.venv/
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# HA store/cache
+.storage/
+__pycache__/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

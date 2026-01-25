@@ -1,0 +1,15 @@
+{
+  "domain": "pireva",
+  "name": "Pireva Garbage Collection Schedule",
+  "codeowners": ["@robertkarlsson"],
+  "config_flow": true,
+  "documentation": "https://github.com/robertkarlsson/home-assistant-pireva",
+  "requirements": [
+    "beautifulsoup4==4.14.3",
+    "requests==2.32.5"
+  ],
+  "dependencies": [],
+  "icon": "mdi:trash-can",
+  "iot_class": "cloud_polling",
+  "version": "1.0.8"
+}
