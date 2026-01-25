@@ -1,9 +1,10 @@
 {
   "domain": "pireva",
   "name": "Pireva Garbage Collection Schedule",
-  "codeowners": ["@robertkarlsson"],
+  "codeowners": ["@karlssonrobert77"],
   "config_flow": true,
-  "documentation": "https://github.com/robertkarlsson/home-assistant-pireva",
+  "documentation": "https://github.com/karlssonrobert77/homeassistant-pireva",
+  "issue_tracker": "https://github.com/karlssonrobert77/homeassistant-pireva/issues",
   "requirements": [
     "beautifulsoup4==4.14.3",
     "requests==2.32.5"
