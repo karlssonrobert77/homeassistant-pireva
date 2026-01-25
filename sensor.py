@@ -40,10 +40,9 @@ class PirevaSensor(SensorEntity):
 
         # set HA instance attributes directly (don't use property)
         self._attr_unique_id = f"{DOMAIN}_{address}"
-        self._attr_has_entity_name = True  # use translation name
+        self._attr_name = f"Sopor hämtning {config[CONF_ADDRESS]}"
         self._attr_icon = "https://www.pireva.se/assets/favicon/apple-touch-icon.png"
         self._attr_entity_picture = "https://www.pireva.se/assets/favicon/apple-touch-icon.png"
-        self._attr_translation_key = "maildaysleft"
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, DEVICE_NAME)},
             ATTR_NAME: DEVICE_NAME,
