@@ -1,0 +1,7 @@
+{
+  "name": "Pireva Garbage Collection Schedule",
+  "render_readme": true,
+  "zip_release": false,
+  "country": ["SE"],
+  "homeassistant": "2023.9.0"
+}
