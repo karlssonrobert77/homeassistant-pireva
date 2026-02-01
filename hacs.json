@@ -3,6 +3,7 @@
   "render_readme": true,
   "zip_release": false,
   "country": ["SE"],
-  "homeassistant": "2023.9.0",
-  "content_in_root": true
+  "homeassistant": "2024.1.0",
+  "content_in_root": true,
+  "domains": ["sensor"]
 }
