@@ -16,7 +16,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     Called by the HA framework after async_setup_platforms has been called
     during initialization of a new integration.
     """
-    worker = hass.data[DOMAIN].worker
+    worker = hass.data[DOMAIN]._worker
     entities = []
 
     entities.append(PirevaSensor(hass, worker, config_entry.data))
@@ -58,19 +58,32 @@ class PirevaSensor(SensorEntity):
             f"{DOMAIN}_changed", self._on_pireva_changed
         )
 
+    async def async_added_to_hass(self):
+        """Run when entity is added to hass - trigger initial update."""
+        await self.async_update()
+
     async def _on_pireva_changed(self, event):
         """Handle pireva_changed events and update sensor."""
         data = event.data
-        if data.get("address") == self._address:
+        action = data.get("action")
+        address = data.get("address")
+        
+        _LOGGER.warning(f"Event mottaget: action={action}, address={address}, self._address={self._address}")
+        
+        if address == self._address and action in ("refresh", "add"):
             await self.async_update()
+            self.async_write_ha_state()
 
     async def async_update(self):
         """Update the value of the entity."""
         _LOGGER.warning(f"PirevaSensor async_update körs för {self._address}")
+        _LOGGER.warning(f"Worker data keys: {list(self._worker.data.keys())}")
+        _LOGGER.warning(f"Looking for key: {self._key}")
         attributes = {}
         try:
             data_entry = self._worker.data.get(self._key)
             if not data_entry:
+                _LOGGER.error(f"Ingen data för adressen {self._key}. Tillgängliga nycklar: {list(self._worker.data.keys())}")
                 raise ValueError("ingen data för adressen")
 
             raw_json = data_entry.get('json', '')
