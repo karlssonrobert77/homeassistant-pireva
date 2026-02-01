@@ -2,7 +2,7 @@ import logging
 import json
 
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import (ATTR_IDENTIFIERS, ATTR_MANUFACTURER, ATTR_MODEL)
+from homeassistant.const import (ATTR_IDENTIFIERS, ATTR_MANUFACTURER, ATTR_MODEL, ATTR_NAME)
 from homeassistant.helpers.device_registry import DeviceEntryType
 from datetime import datetime
 
