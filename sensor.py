@@ -105,7 +105,11 @@ class PirevaSensor(SensorEntity):
             attributes['url']  = data_entry.get('url')
             attributes['next_day'] = nextEmptyDay
             attributes['next_typ'] = nextEmptyTyp
-            attributes['schedule'] = j
+            
+            # Create schedule without information (shown separately as info1, info2, etc)
+            schedule_data = {k: v for k, v in j.items() if k != 'information'}
+            attributes['schedule'] = schedule_data
+            
             info_list = j.get('information', [])
             for idx, txt in enumerate(info_list, start=1):
                 attributes[f"info{idx}"] = txt
