@@ -40,7 +40,8 @@ class PirevaSensor(SensorEntity):
 
         # set HA instance attributes directly (don't use property)
         self._attr_unique_id = f"{DOMAIN}_{address}"
-        self._attr_name = f"Sopor hämtning {config[CONF_ADDRESS]}"
+        self._attr_has_entity_name = True
+        self._attr_translation_key = "garbage_pickup"
         self._attr_icon = "mdi:trash-can"
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, DEVICE_NAME)},

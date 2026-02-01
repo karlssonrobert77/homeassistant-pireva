@@ -15,10 +15,7 @@
   },
   "entity": {
     "sensor": {
-      "garbage_collection": {
-        "name": "Sopor hämtning"
-      },
-      "maildaysleft": {
+      "garbage_pickup": {
         "name": "Sopor hämtning",
         "state": {
           "0": "Idag",

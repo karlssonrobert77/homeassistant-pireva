@@ -15,10 +15,7 @@
   },
   "entity": {
     "sensor": {
-      "garbage_collection": {
-        "name": "Garbage Pickup"
-      },
-      "maildaysleft": {
+      "garbage_pickup": {
         "name": "Garbage Pickup",
         "state": {
           "0": "Today",
