@@ -35,13 +35,13 @@ class PirevaSensor(SensorEntity):
         self._key = address
         self._address = address
         self._value = None
+        self._next_typ = None
 
         self._update_sensor_listener = None
 
         # set HA instance attributes directly (don't use property)
         self._attr_unique_id = f"{DOMAIN}_{address}"
         self._attr_name = f"Sopor hämtning {config[CONF_ADDRESS]}"
-        self._attr_translation_key = "garbage_pickup"
         self._attr_icon = "mdi:trash-can"
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, DEVICE_NAME)},
@@ -110,6 +110,7 @@ class PirevaSensor(SensorEntity):
             for idx, txt in enumerate(info_list, start=1):
                 attributes[f"info{idx}"] = txt
             self._value = numDays
+            self._next_typ = nextEmptyTyp
         except Exception as error:
             _LOGGER.error(
                 "PirevaSensor update error for %s: %s | raw=%s",
@@ -125,9 +126,31 @@ class PirevaSensor(SensorEntity):
             attributes['next_typ'] = ''
             attributes['schedule'] = {}     
             self._value = None
+            self._next_typ = None
 
         self._attr_extra_state_attributes = attributes
         self._attr_attribution = SENSOR_ATTRIB
+
+    def _translate_days(self, days):
+        """Translate number of days to Swedish text."""
+        translations = {
+            0: "Idag",
+            1: "I morgon",
+            2: "I övermorgon",
+            3: "Om tre dagar",
+            4: "Om fyra dagar",
+            5: "Om fem dagar",
+            6: "Om sex dagar",
+            7: "Om en vecka",
+            8: "Om 8 dagar",
+            9: "Om 9 dagar",
+            10: "Om 10 dagar",
+            11: "Om 11 dagar",
+            12: "Om 12 dagar",
+            13: "Om 13 dagar",
+            14: "Om två veckor"
+        }
+        return translations.get(days, f"Om {days} dagar")
 
     @property
     def available(self):
@@ -137,7 +160,12 @@ class PirevaSensor(SensorEntity):
     @property
     def native_value(self):
         """Return the value of the entity."""
-        return self._value
+        if self._value is None:
+            return None
+        day_text = self._translate_days(self._value)
+        if self._next_typ:
+            return f"{day_text} - {self._next_typ}"
+        return day_text
 
     @property
     def device_class(self):
