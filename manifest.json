@@ -6,11 +6,11 @@
   "documentation": "https://github.com/karlssonrobert77/homeassistant-pireva",
   "issue_tracker": "https://github.com/karlssonrobert77/homeassistant-pireva/issues",
   "requirements": [
-    "beautifulsoup4==4.14.3",
-    "requests==2.32.5"
+    "beautifulsoup4>=4.12.0",
+    "requests>=2.31.0"
   ],
   "dependencies": [],
   "icon": "mdi:trash-can",
   "iot_class": "cloud_polling",
-  "version": "1.0.17"
+  "version": "1.0.18"
 }
