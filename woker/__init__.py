@@ -1,6 +1,6 @@
 import logging
 import re
-from datetime import datetime
+from datetime import date, datetime
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -23,32 +23,55 @@ class HttpWorker:
     def data(self):
         return self._data
 
-    def extract_dates(self, text):
-        y = datetime.today().strftime("%Y")
-        
-        # Regex för att matcha "dag månad" (t.ex. "27 januari")
-        date_pattern = r"(\d{1,2})\s+(\w+)"
-        matches = re.findall(date_pattern, text)
+    MONTHS_SV = {
+        'januari': 1, 'februari': 2, 'mars': 3, 'april': 4,
+        'maj': 5, 'juni': 6, 'juli': 7, 'augusti': 8,
+        'september': 9, 'oktober': 10, 'november': 11, 'december': 12
+    }
 
-        # Ordbok för att konvertera svenska månadnamn till nummer
-        months_sv = {
-            'januari': 1, 'februari': 2, 'mars': 3, 'april': 4,
-            'maj': 5, 'juni': 6, 'juli': 7, 'augusti': 8,
-            'september': 9, 'oktober': 10, 'november': 11, 'december': 12
-        }
+    WEEKDAYS_SV = {
+        'måndag': 0, 'tisdag': 1, 'onsdag': 2, 'torsdag': 3,
+        'fredag': 4, 'lördag': 5, 'söndag': 6
+    }
 
-        for day_str, month_str in matches:
-            month_lower = month_str.lower()
-            if month_lower in months_sv:
-                try:
-                    day = int(day_str)
-                    month = months_sv[month_lower]
-                    # Formatera som YYYY-MM-DD
-                    return f"{y}-{month:02d}-{day:02d}"
-                except (ValueError, KeyError):
-                    pass
-        
-        return ''
+    def extract_dates(self, text, year_hint=None):
+        """Tolka t.ex. "Måndag 27 september" till YYYY-MM-DD.
+
+        Sidan anger inte alltid årtal, och schemat kan gälla nästa år.
+        Året bestäms därför i ordningen: årtal i texten, årtal i
+        tabellrubriken (year_hint), året där veckodagen stämmer (närmast
+        idag), och sist innevarande år.
+        """
+        today = date.today()
+        text_lower = text.lower()
+
+        match = re.search(r"(\d{1,2})\s+([a-zåäö]+)(?:\s+(\d{4}))?", text_lower)
+        if not match or match.group(2) not in self.MONTHS_SV:
+            return ''
+        day = int(match.group(1))
+        month = self.MONTHS_SV[match.group(2)]
+
+        def build(year):
+            try:
+                return date(year, month, day)
+            except ValueError:
+                return None
+
+        explicit_year = match.group(3) or year_hint
+        if explicit_year:
+            d = build(int(explicit_year))
+            return d.isoformat() if d else ''
+
+        weekday = next((wd for name, wd in self.WEEKDAYS_SV.items() if name in text_lower), None)
+        if weekday is not None:
+            candidates = [build(y) for y in range(today.year - 1, today.year + 3)]
+            candidates = [d for d in candidates if d and d.weekday() == weekday]
+            if candidates:
+                d = min(candidates, key=lambda c: abs((c - today).days))
+                return d.isoformat()
+
+        d = build(today.year)
+        return d.isoformat() if d else ''
 
     def _fetch_data(self, url):
         tömningsdagar_per_månad = {
@@ -118,6 +141,9 @@ class HttpWorker:
                 
                 if not månad:
                     continue
+
+                year_match = re.search(r"\b(20\d{2})\b", månad_text)
+                year_hint = year_match.group(1) if year_match else None
                 
                 # Hämta rader från tbody
                 tbody = table.find('tbody')
@@ -132,7 +158,7 @@ class HttpWorker:
                         datum_text = cells[1].get_text(strip=True)
                         
                         # Extrahera datum från texten (t.ex. "Tisdag 27 januari")
-                        d = self.extract_dates(datum_text)
+                        d = self.extract_dates(datum_text, year_hint)
                         
                         if d:
                             entry = {"typ": typ, "datum": d}

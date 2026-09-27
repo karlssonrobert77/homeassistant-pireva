@@ -96,8 +96,8 @@ class PirevaSensor(SensorEntity):
                 raise ValueError("nästa tömning saknas")
             nextEmptyDay = next_list[0]['datum']
             nextEmptyTyp = next_list[0]['typ']
-            newDate = datetime.strptime(nextEmptyDay, "%Y-%m-%d")
-            numDays = (newDate - datetime.now()).days+1
+            newDate = datetime.strptime(nextEmptyDay, "%Y-%m-%d").date()
+            numDays = (newDate - datetime.now().date()).days
 
             attributes['last_update'] = data_entry.get('last_update')
             attributes['days_left'] = numDays
